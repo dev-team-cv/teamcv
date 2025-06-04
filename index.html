@@ -13,6 +13,11 @@
             box-sizing: border-box;
         }
 
+        /* Smooth transitions for text elements */
+        [data-i18n], h1, h2, h3, p, span, td, th, li {
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        }
+
         :root {
             --primary: #374151;
             --primary-dark: #1f2937;
@@ -43,6 +48,36 @@
             -moz-osx-font-smoothing: grayscale;
             position: relative;
             overflow-x: hidden;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--background);
+            color: var(--text-secondary);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            background: var(--surface);
+            color: var(--primary);
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
         /* Background Effects */
@@ -183,6 +218,12 @@
             right: 0;
             height: 2px;
             background-color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
         /* Hero Section */
@@ -521,6 +562,53 @@
             opacity: 0;
         }
 
+        /* Language switch animation */
+        @keyframes textFade {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            50% {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lang-switching [data-i18n],
+        .lang-switching h1,
+        .lang-switching h2,
+        .lang-switching h3,
+        .lang-switching p,
+        .lang-switching span,
+        .lang-switching td,
+        .lang-switching th,
+        .lang-switching li,
+        .lang-switching .nav-link,
+        .lang-switching .tech-badge,
+        .lang-switching .competency-title,
+        .lang-switching .competency-description {
+            animation: textFade 0.4s ease-out;
+        }
+
+        /* Stagger animation for elements */
+        .lang-switching .nav-link:nth-child(1) { animation-delay: 0.02s; }
+        .lang-switching .nav-link:nth-child(2) { animation-delay: 0.04s; }
+        .lang-switching .nav-link:nth-child(3) { animation-delay: 0.06s; }
+        .lang-switching .nav-link:nth-child(4) { animation-delay: 0.08s; }
+        .lang-switching .nav-link:nth-child(5) { animation-delay: 0.1s; }
+        
+        .lang-switching .tech-badge:nth-child(odd) { animation-delay: 0.05s; }
+        .lang-switching .tech-badge:nth-child(even) { animation-delay: 0.1s; }
+        
+        .lang-switching .competency-card:nth-child(1) * { animation-delay: 0.05s; }
+        .lang-switching .competency-card:nth-child(2) * { animation-delay: 0.1s; }
+        .lang-switching .competency-card:nth-child(3) * { animation-delay: 0.15s; }
+        .lang-switching .competency-card:nth-child(4) * { animation-delay: 0.2s; }
+
         /* Print Styles */
         @media print {
             body {
@@ -536,7 +624,8 @@
             .bg-orb,
             .header,
             .footer,
-            .print-button {
+            .print-button,
+            .lang-switcher {
                 display: none !important;
             }
 
@@ -625,7 +714,6 @@
                 padding: 0.5rem;
             }
 
-
             .competencies-grid {
                 grid-template-columns: 1fr;
             }
@@ -633,6 +721,16 @@
             .contact-links {
                 flex-direction: column;
                 gap: 1rem;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .lang-switcher {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -646,249 +744,552 @@
     <!-- Header -->
     <header class="header">
         <div class="header-container">
-            <div class="logo">Team CV</div>
-            <nav class="nav">
-                <a href="#zusammenfassung" class="nav-link">Zusammenfassung</a>
-                <a href="#meilensteine" class="nav-link">Meilensteine</a>
-                <a href="#technologie-stack" class="nav-link">Technologie</a>
-                <a href="#kompetenzen" class="nav-link">Kompetenzen</a>
-                <a href="#kurzprofile" class="nav-link">Profile</a>
-                <a href="#verfugbarkeit-kontakt" class="nav-link">Kontakt</a>
+            <div class="logo" data-i18n="logo">Team CV</div>
+            <nav class="nav" id="main-nav">
+                <!-- Navigation will be rendered by JavaScript -->
             </nav>
-            <button class="print-button" onclick="window.print()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 9V2h12v7"></path>
-                    <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path>
-                    <path d="M6 14h12v8H6z"></path>
-                </svg>
-                Drucken
-            </button>
+            <div class="header-actions">
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="de">DE</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+                <button class="print-button" onclick="window.print()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9V2h12v7"></path>
+                        <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path>
+                        <path d="M6 14h12v8H6z"></path>
+                    </svg>
+                    <span data-i18n="print">Drucken</span>
+                </button>
+            </div>
         </div>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Team-CV – Fullstack Software Engineering Team</h1>
-            <p class="subtitle">
-                Wir sind ein erfahrenes Trio aus Softwareentwicklern, das in den letzten 24 Monaten an einer Cloud-nativen Home-Energy-Management-Plattform gearbeitet hat.
-                Durch unsere abgestimmte Tool-Chain (GitLab CI/CD, Kubernetes, GitOps) und gut abgestimmten, klar definierten Prozesse liefern wir schnellstmöglich produktive Inkremente.
-            </p>
+            <h1 data-i18n="hero.title"></h1>
+            <p class="subtitle" data-i18n="hero.subtitle"></p>
         </div>
     </section>
 
-    <!-- Meilensteine Section -->
-    <section class="section animate-in" id="meilensteine">
-        <div class="section-header">
-            <h2 class="section-title">Gemeinsame und persönliche Meilensteine</h2>
-        </div>
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Projekt</th>
-                    <th>Kurzbeschreibung</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>White-Label-HEMS-Plattform</strong></td>
-                    <td>Multi-Tenant-IoT-Plattform für Stadtwerke; Backend mit .NET 8, Flutter-App, automatisiertes Deployment über GitOps und Fastlane.</td>
-                </tr>
-                <tr>
-                    <td><strong>Vollautomatisiertes Multi-Tenant-App-Deployment</strong></td>
-                    <td>Parametrisierte, automatische Bereitstellung von Apps für mehrere Mandanten im Apple App Store und Google Play Store mittels CI/CD-Pipelines über Fastlane, Docker, GitOps und GitLab CI. </td>
-                </tr>
-                <tr>
-                    <td><strong>Generalisierter Daten-Ingestion-Service</strong></td>
-                    <td>Event- und Job-Engine für Daten von Energie-Zählern, Preisen und Geräten (ASP.NET Core, RabbitMq, Webhooks, Quartz, PostgreSQL, Grafana).</td>
-                </tr>
-                <tr>
-                    <td><strong>Infotainment Cross-Platform-Services</strong></td>
-                    <td>Backends und Tooling für Automotive-Infotainment im ISO-26262-Umfeld.</td>
-                </tr>
-                <tr>
-                    <td><strong>Metadaten-Management</strong></td>
-                    <td>Migration eines Media-Workflows auf Microservices (Kubernetes).</td>
-                </tr>
-                <tr>
-                    <td><strong>Barrierefreiheit in Apps</strong></td>
-                    <td>Implementierung und Test von Zugänglichkeitsstandards (z.B. WCAG) im Flutter-Frontend.</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- Technologie Stack Section -->
-    <section class="section animate-in animate-in-delay-1" id="technologie-stack">
-        <div class="section-header">
-            <h2 class="section-title">Gemeinsamer Technologie-Stack</h2>
-        </div>
-        <div class="card">
-            <div class="tech-stack">
-                <span class="tech-badge">C#/.NET 8</span>
-                <span class="tech-badge">Flutter/Dart</span>
-                <span class="tech-badge">Java</span>
-                <span class="tech-badge">Kubernetes &amp; Helm</span>
-                <span class="tech-badge">GitOps/Flux</span>
-                <span class="tech-badge">GitLab CI/CD</span>
-                <span class="tech-badge">RabbitMQ</span>
-                <span class="tech-badge">PostgreSQL</span>
-                <span class="tech-badge">Azure/AWS</span>
-                <span class="tech-badge">Open ID Connect</span>
-                <span class="tech-badge">Keycloak</span>
-                <span class="tech-badge">Onion Architecture</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Kompetenzen Section -->
-    <section class="section animate-in animate-in-delay-2" id="kompetenzen">
-        <div class="section-header">
-            <h2 class="section-title">Team-Kompetenzen</h2>
-        </div>
-        <div class="competencies-grid">
-            <div class="competency-card">
-                <h3 class="competency-title">Architektur und Backend</h3>
-                <p class="competency-description">Entwicklung von Microservices mit .NET 8 und Java 17</p>
-            </div>
-            <div class="competency-card">
-                <h3 class="competency-title">Cross-Platform-Apps</h3>
-                <p class="competency-description">Aufbau von Flutter-Frontends und deren Integration in multimandantenfähige CI/CD-Pipelines</p>
-            </div>
-            <div class="competency-card">
-                <h3 class="competency-title">DevOps &amp; Cloud</h3>
-                <p class="competency-description">Kubernetes-Betrieb, GitOps-Deployment und Monitoring</p>
-            </div>
-            <div class="competency-card">
-                <h3 class="competency-title">Agile Vorgehensweise</h3>
-                <p class="competency-description">SCRUM, Pair-Programming, Bereitstellung häufiger und kleiner Inkremente</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Kurzprofile Section -->
-    <section class="section animate-in animate-in-delay-3" id="kurzprofile">
-        <div class="section-header">
-            <h2 class="section-title">Individuelle Kurzprofile (letzte 5 Jahre)</h2>
-        </div>
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Rolle</th>
-                    <th>Erfahrung</th>
-                    <th>Relevante Stationen</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Lars Sinda</strong></td>
-                    <td>Lead Developer / Architect</td>
-                    <td>> 15 Jahre</td>
-                    <td>
-                        <strong>Senior Lead Developer</strong><br><em>enytime green GmbH</em><br>
-                        <strong>Full-Stack Developer</strong><br><em>RTL Technology</em><br>
-                        <strong>Automatisierungs-Entwickler</strong><br><em>ArcelorMittal Bremen & OHB Digital Services</em><br>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Eric Isensee</strong></td>
-                    <td>Full-Stack Developer &amp; Mobile Lead</td>
-                    <td>~ 5 Jahre</td>
-                    <td>
-                        <strong>Full-Stack Developer</strong><br><em>enytime green GmbH</em><br>
-                        <strong>Full-Stack Developer</strong><br><em>Bertrandt</em><br>
-                        <strong>IT-Praktikant</strong><br><em>Landkreis Rotenburg</em><br>
-                        <strong>Ausbildung Fachinformatiker</strong><br><em>CI/CD &amp; Automatisierung</em><br>
-                        <strong>Zugänglichkeits-Features</strong><br><em>Cross-Platform-Apps</em>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>Marvin Stange</strong></td>
-                    <td>Backend Engineer</td>
-                    <td>> 8 Jahre</td>
-                    <td>
-                        <strong>Backend Engineer</strong><br><em>enytime green GmbH</em><br>
-                        <strong>Backend Developer</strong><br><em>unizell Medicare GmbH – Event-Driven Backends &amp; Microservices</em><br>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <!-- Arbeitsweise Section -->
-    <section class="section" id="arbeitsweise">
-        <div class="section-header">
-            <h2 class="section-title">Arbeitsweise</h2>
-        </div>
-        <div class="card">
-            <ul class="method-list">
-                <li>Gemeinsame Definition-of-Done, Code Reviews und automatisierte Tests</li>
-                <li>Einheitliches Verständnis von Prozessen für Release und Entwicklung</li>
-                <li>Remote-First mit gelegentlichen Treffen in Deutschland</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- Verfügbarkeit & Kontakt Section -->
-    <section class="section" id="verfugbarkeit-kontakt">
-        <div class="section-header">
-            <h2 class="section-title">Verfügbarkeit &amp; Kontakt</h2>
-        </div>
-        <div class="contact-section">
-            <p class="section-description"><strong>Start:</strong> nach Vereinbarung</p>
-            <div class="contact-links">
-                <a href="mailto:contact@lars-sinda.de" class="contact-link">
-                    <svg class="contact-icon" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                    </svg>
-                    contact@lars-sinda.de
-                </a>
-                <a href="mailto:contact@ericisensee.de" class="contact-link">
-                    <svg class="contact-icon" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                    </svg>
-                    contact@ericisensee.de
-                </a>
-                <a href="mailto:marvin.stange@web.de" class="contact-link">
-                    <svg class="contact-icon" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                    </svg>
-                    marvin.stange@web.de
-                </a>
-            </div>
-        </div>
-    </section>
+    <!-- Content sections will be rendered by JavaScript -->
+    <div id="content-container"></div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <p class="footer-text">© 2025 - Mit Liebe und einer ordentlichen Portion KI erstellt.</p>
+            <p class="footer-text" data-i18n="footer.text"></p>
         </div>
     </footer>
 
     <script>
+        // Translation data
+        const translations = {
+            de: {
+                logo: "Team CV",
+                print: "Drucken",
+                nav: {
+                    summary: "Zusammenfassung",
+                    milestones: "Meilensteine",
+                    technology: "Technologie",
+                    competencies: "Kompetenzen",
+                    profiles: "Profile",
+                    contact: "Kontakt"
+                },
+                hero: {
+                    title: "Team-CV – Fullstack Software Engineering Team",
+                    subtitle: "Wir sind ein erfahrenes Trio aus Softwareentwicklern, das in den letzten 24 Monaten an einer Cloud-nativen Home-Energy-Management-Plattform gearbeitet hat. Durch unsere abgestimmte Tool-Chain (GitLab CI/CD, Kubernetes, GitOps) und gut abgestimmten, klar definierten Prozesse liefern wir schnellstmöglich produktive Inkremente."
+                },
+                sections: {
+                    milestones: {
+                        title: "Gemeinsame und persönliche Meilensteine",
+                        headers: ["Projekt", "Kurzbeschreibung"],
+                        projects: [
+                            {
+                                name: "White-Label-HEMS-Plattform",
+                                description: "Multi-Tenant-IoT-Plattform für Stadtwerke; Backend mit .NET 8, Flutter-App, automatisiertes Deployment über GitOps und Fastlane."
+                            },
+                            {
+                                name: "Vollautomatisiertes Multi-Tenant-App-Deployment",
+                                description: "Parametrisierte, automatische Bereitstellung von Apps für mehrere Mandanten im Apple App Store und Google Play Store mittels CI/CD-Pipelines über Fastlane, Docker, GitOps und GitLab CI."
+                            },
+                            {
+                                name: "Generalisierter Daten-Ingestion-Service",
+                                description: "Event- und Job-Engine für Daten von Energie-Zählern, Preisen und Geräten (ASP.NET Core, RabbitMq, Webhooks, Quartz, PostgreSQL, Grafana)."
+                            },
+                            {
+                                name: "Infotainment Cross-Platform-Services",
+                                description: "Backends und Tooling für Automotive-Infotainment im ISO-26262-Umfeld."
+                            },
+                            {
+                                name: "Metadaten-Management",
+                                description: "Migration eines Media-Workflows auf Microservices (Kubernetes)."
+                            },
+                            {
+                                name: "Barrierefreiheit in Apps",
+                                description: "Implementierung und Test von Zugänglichkeitsstandards (z.B. WCAG) im Flutter-Frontend."
+                            }
+                        ]
+                    },
+                    technology: {
+                        title: "Gemeinsamer Technologie-Stack",
+                        badges: ["C#/.NET 8", "Flutter/Dart", "Java", "Kubernetes & Helm", "GitOps/Flux", "GitLab CI/CD", "RabbitMQ", "PostgreSQL", "Azure/AWS", "Open ID Connect", "Keycloak", "Onion Architecture"]
+                    },
+                    competencies: {
+                        title: "Team-Kompetenzen",
+                        items: [
+                            {
+                                title: "Architektur und Backend",
+                                description: "Entwicklung von Microservices mit .NET 8 und Java 17"
+                            },
+                            {
+                                title: "Cross-Platform-Apps",
+                                description: "Aufbau von Flutter-Frontends und deren Integration in multimandantenfähige CI/CD-Pipelines"
+                            },
+                            {
+                                title: "DevOps & Cloud",
+                                description: "Kubernetes-Betrieb, GitOps-Deployment und Monitoring"
+                            },
+                            {
+                                title: "Agile Vorgehensweise",
+                                description: "SCRUM, Pair-Programming, Bereitstellung häufiger und kleiner Inkremente"
+                            }
+                        ]
+                    },
+                    profiles: {
+                        title: "Individuelle Kurzprofile (letzte 5 Jahre)",
+                        headers: ["Name", "Rolle", "Erfahrung", "Relevante Stationen"],
+                        people: [
+                            {
+                                name: "Lars Sinda",
+                                role: "Lead Developer / Architect",
+                                experience: "> 15 Jahre",
+                                stations: [
+                                    { title: "Senior Lead Developer", company: "enytime green GmbH" },
+                                    { title: "Full-Stack Developer", company: "RTL Technology" },
+                                    { title: "Automatisierungs-Entwickler", company: "ArcelorMittal Bremen & OHB Digital Services" }
+                                ]
+                            },
+                            {
+                                name: "Eric Isensee",
+                                role: "Full-Stack Developer & Mobile Lead",
+                                experience: "~ 5 Jahre",
+                                stations: [
+                                    { title: "Full-Stack Developer", company: "enytime green GmbH" },
+                                    { title: "Full-Stack Developer", company: "Bertrandt" },
+                                    { title: "IT-Praktikant", company: "Landkreis Rotenburg" },
+                                    { title: "Ausbildung Fachinformatiker", company: "CI/CD & Automatisierung" },
+                                    { title: "Zugänglichkeits-Features", company: "Cross-Platform-Apps" }
+                                ]
+                            },
+                            {
+                                name: "Marvin Stange",
+                                role: "Backend Engineer",
+                                experience: "> 8 Jahre",
+                                stations: [
+                                    { title: "Backend Engineer", company: "enytime green GmbH" },
+                                    { title: "Backend Developer", company: "unizell Medicare GmbH – Event-Driven Backends & Microservices" }
+                                ]
+                            }
+                        ]
+                    },
+                    workMethod: {
+                        title: "Arbeitsweise",
+                        items: [
+                            "Gemeinsame Definition-of-Done, Code Reviews und automatisierte Tests",
+                            "Einheitliches Verständnis von Prozessen für Release und Entwicklung",
+                            "Remote-First mit gelegentlichen Treffen in Deutschland"
+                        ]
+                    },
+                    contact: {
+                        title: "Verfügbarkeit & Kontakt",
+                        availability: "Start: nach Vereinbarung"
+                    }
+                },
+                footer: {
+                    text: "© 2025 - Mit Liebe und einer ordentlichen Portion KI erstellt."
+                }
+            },
+            en: {
+                logo: "Team CV",
+                print: "Print",
+                nav: {
+                    summary: "Summary",
+                    milestones: "Milestones",
+                    technology: "Technology",
+                    competencies: "Competencies",
+                    profiles: "Profiles",
+                    contact: "Contact"
+                },
+                hero: {
+                    title: "Team CV – Fullstack Software Engineering Team",
+                    subtitle: "We are an experienced trio of software developers who have been working on a cloud-native home energy management platform for the past 24 months. Through our coordinated tool chain (GitLab CI/CD, Kubernetes, GitOps) and well-aligned, clearly defined processes, we deliver productive increments as quickly as possible."
+                },
+                sections: {
+                    milestones: {
+                        title: "Shared and Personal Milestones",
+                        headers: ["Project", "Brief Description"],
+                        projects: [
+                            {
+                                name: "White-Label HEMS Platform",
+                                description: "Multi-tenant IoT platform for utilities; backend with .NET 8, Flutter app, automated deployment via GitOps and Fastlane."
+                            },
+                            {
+                                name: "Fully Automated Multi-Tenant App Deployment",
+                                description: "Parameterized, automatic deployment of apps for multiple tenants in Apple App Store and Google Play Store using CI/CD pipelines via Fastlane, Docker, GitOps and GitLab CI."
+                            },
+                            {
+                                name: "Generalized Data Ingestion Service",
+                                description: "Event and job engine for data from energy meters, prices and devices (ASP.NET Core, RabbitMq, Webhooks, Quartz, PostgreSQL, Grafana)."
+                            },
+                            {
+                                name: "Infotainment Cross-Platform Services",
+                                description: "Backends and tooling for automotive infotainment in ISO-26262 environment."
+                            },
+                            {
+                                name: "Metadata Management",
+                                description: "Migration of a media workflow to microservices (Kubernetes)."
+                            },
+                            {
+                                name: "Accessibility in Apps",
+                                description: "Implementation and testing of accessibility standards (e.g. WCAG) in Flutter frontend."
+                            }
+                        ]
+                    },
+                    technology: {
+                        title: "Shared Technology Stack",
+                        badges: ["C#/.NET 8", "Flutter/Dart", "Java", "Kubernetes & Helm", "GitOps/Flux", "GitLab CI/CD", "RabbitMQ", "PostgreSQL", "Azure/AWS", "Open ID Connect", "Keycloak", "Onion Architecture"]
+                    },
+                    competencies: {
+                        title: "Team Competencies",
+                        items: [
+                            {
+                                title: "Architecture and Backend",
+                                description: "Development of microservices with .NET 8 and Java 17"
+                            },
+                            {
+                                title: "Cross-Platform Apps",
+                                description: "Building Flutter frontends and their integration into multi-tenant CI/CD pipelines"
+                            },
+                            {
+                                title: "DevOps & Cloud",
+                                description: "Kubernetes operations, GitOps deployment and monitoring"
+                            },
+                            {
+                                title: "Agile Methodology",
+                                description: "SCRUM, pair programming, delivery of frequent and small increments"
+                            }
+                        ]
+                    },
+                    profiles: {
+                        title: "Individual Profiles (Last 5 Years)",
+                        headers: ["Name", "Role", "Experience", "Relevant Positions"],
+                        people: [
+                            {
+                                name: "Lars Sinda",
+                                role: "Lead Developer / Architect",
+                                experience: "> 15 years",
+                                stations: [
+                                    { title: "Senior Lead Developer", company: "enytime green GmbH" },
+                                    { title: "Full-Stack Developer", company: "RTL Technology" },
+                                    { title: "Automation Developer", company: "ArcelorMittal Bremen & OHB Digital Services" }
+                                ]
+                            },
+                            {
+                                name: "Eric Isensee",
+                                role: "Full-Stack Developer & Mobile Lead",
+                                experience: "~ 5 years",
+                                stations: [
+                                    { title: "Full-Stack Developer", company: "enytime green GmbH" },
+                                    { title: "Full-Stack Developer", company: "Bertrandt" },
+                                    { title: "IT Intern", company: "Landkreis Rotenburg" },
+                                    { title: "IT Specialist Training", company: "CI/CD & Automation" },
+                                    { title: "Accessibility Features", company: "Cross-Platform Apps" }
+                                ]
+                            },
+                            {
+                                name: "Marvin Stange",
+                                role: "Backend Engineer",
+                                experience: "> 8 years",
+                                stations: [
+                                    { title: "Backend Engineer", company: "enytime green GmbH" },
+                                    { title: "Backend Developer", company: "unizell Medicare GmbH – Event-Driven Backends & Microservices" }
+                                ]
+                            }
+                        ]
+                    },
+                    workMethod: {
+                        title: "Work Method",
+                        items: [
+                            "Shared Definition of Done, code reviews and automated tests",
+                            "Unified understanding of processes for releases and development",
+                            "Remote-first with occasional meetings in Germany"
+                        ]
+                    },
+                    contact: {
+                        title: "Availability & Contact",
+                        availability: "Start: upon agreement"
+                    }
+                },
+                footer: {
+                    text: "© 2025 - Created with love and a good portion of AI."
+                }
+            }
+        };
+
+        // Current language
+        let currentLang = 'de';
+
+        // Initialize the page
+        function init() {
+            setupLanguageSwitcher();
+            renderContent();
+            setupNavigation();
+            setupParallax();
+            initAnimations();
+        }
+
+        // Setup language switcher
+        function setupLanguageSwitcher() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.dataset.lang;
+                    if (lang !== currentLang) {
+                        // Add animation class
+                        document.body.classList.add('lang-switching');
+                        
+                        // Small delay to ensure animation starts
+                        setTimeout(() => {
+                            currentLang = lang;
+                            document.documentElement.lang = lang;
+                            updateLanguageButtons();
+                            renderContent();
+                            
+                            // Remove animation class after animation completes
+                            setTimeout(() => {
+                                document.body.classList.remove('lang-switching');
+                            }, 400);
+                        }, 10);
+                    }
+                });
+            });
+        }
+
+        // Update active language button
+        function updateLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+        }
+
+        // Render all content
+        function renderContent() {
+            const t = translations[currentLang];
+            
+            // Update simple text elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                const keys = key.split('.');
+                let value = t;
+                for (const k of keys) {
+                    value = value[k];
+                }
+                if (value) el.textContent = value;
+            });
+
+            // Render navigation
+            renderNavigation();
+            
+            // Render main content sections
+            renderMainContent();
+            
+            // Re-initialize navigation and animations for new content
+            setTimeout(() => {
+                setupNavigation();
+                initAnimations();
+            }, 50);
+        }
+
+        // Render navigation
+        function renderNavigation() {
+            const nav = document.getElementById('main-nav');
+            const t = translations[currentLang];
+            
+            nav.innerHTML = `
+                <a href="#meilensteine" class="nav-link">${t.nav.milestones}</a>
+                <a href="#technologie-stack" class="nav-link">${t.nav.technology}</a>
+                <a href="#kompetenzen" class="nav-link">${t.nav.competencies}</a>
+                <a href="#kurzprofile" class="nav-link">${t.nav.profiles}</a>
+                <a href="#verfugbarkeit-kontakt" class="nav-link">${t.nav.contact}</a>
+            `;
+        }
+
+        // Render main content sections
+        function renderMainContent() {
+            const container = document.getElementById('content-container');
+            const t = translations[currentLang];
+            
+            container.innerHTML = `
+                <!-- Milestones Section -->
+                <section class="section animate-in" id="meilensteine">
+                    <div class="section-header">
+                        <h2 class="section-title">${t.sections.milestones.title}</h2>
+                    </div>
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>${t.sections.milestones.headers[0]}</th>
+                                <th>${t.sections.milestones.headers[1]}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${t.sections.milestones.projects.map(project => `
+                                <tr>
+                                    <td><strong>${project.name}</strong></td>
+                                    <td>${project.description}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Technology Stack Section -->
+                <section class="section animate-in animate-in-delay-1" id="technologie-stack">
+                    <div class="section-header">
+                        <h2 class="section-title">${t.sections.technology.title}</h2>
+                    </div>
+                    <div class="card">
+                        <div class="tech-stack">
+                            ${t.sections.technology.badges.map(badge => `
+                                <span class="tech-badge">${badge}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Competencies Section -->
+                <section class="section animate-in animate-in-delay-2" id="kompetenzen">
+                    <div class="section-header">
+                        <h2 class="section-title">${t.sections.competencies.title}</h2>
+                    </div>
+                    <div class="competencies-grid">
+                        ${t.sections.competencies.items.map(item => `
+                            <div class="competency-card">
+                                <h3 class="competency-title">${item.title}</h3>
+                                <p class="competency-description">${item.description}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+
+                <!-- Profiles Section -->
+                <section class="section animate-in animate-in-delay-3" id="kurzprofile">
+                    <div class="section-header">
+                        <h2 class="section-title">${t.sections.profiles.title}</h2>
+                    </div>
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                ${t.sections.profiles.headers.map(header => `<th>${header}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${t.sections.profiles.people.map(person => `
+                                <tr>
+                                    <td><strong>${person.name}</strong></td>
+                                    <td>${person.role}</td>
+                                    <td>${person.experience}</td>
+                                    <td>
+                                        ${person.stations.map(station => `
+                                            <strong>${station.title}</strong><br><em>${station.company}</em><br>
+                                        `).join('')}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Work Method Section -->
+                <section class="section" id="arbeitsweise">
+                    <div class="section-header">
+                        <h2 class="section-title">${t.sections.workMethod.title}</h2>
+                    </div>
+                    <div class="card">
+                        <ul class="method-list">
+                            ${t.sections.workMethod.items.map(item => `
+                                <li>${item}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Contact Section -->
+                <section class="section" id="verfugbarkeit-kontakt">
+                    <div class="section-header">
+                        <h2 class="section-title">${t.sections.contact.title}</h2>
+                    </div>
+                    <div class="contact-section">
+                        <p class="section-description"><strong>${t.sections.contact.availability}</strong></p>
+                        <div class="contact-links">
+                            <a href="mailto:contact@lars-sinda.de" class="contact-link">
+                                <svg class="contact-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                </svg>
+                                contact@lars-sinda.de
+                            </a>
+                            <a href="mailto:contact@ericisensee.de" class="contact-link">
+                                <svg class="contact-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                </svg>
+                                contact@ericisensee.de
+                            </a>
+                            <a href="mailto:marvin.stange@web.de" class="contact-link">
+                                <svg class="contact-icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                </svg>
+                                marvin.stange@web.de
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
         // Smooth scroll navigation
         function setupNavigation() {
-            const links = document.querySelectorAll('.nav-link');
-            const sections = document.querySelectorAll('.section');
-
+            // Remove existing click listener to avoid duplicates
+            const existingHandler = document.getElementById('nav-click-handler');
+            if (existingHandler) {
+                existingHandler.remove();
+            }
+            
+            // Create new handler
+            const clickHandler = document.createElement('div');
+            clickHandler.id = 'nav-click-handler';
+            clickHandler.style.display = 'none';
+            document.body.appendChild(clickHandler);
+            
             // Smooth scroll on click
-            links.forEach(link => {
-                link.addEventListener('click', (e) => {
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('nav-link')) {
                     e.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
+                    const targetId = e.target.getAttribute('href').substring(1);
                     const targetSection = document.getElementById(targetId);
                     if (targetSection) {
                         targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
-                });
+                }
             });
 
             // Update active nav link on scroll
+            const sections = document.querySelectorAll('.section');
+            
             const observerOptions = {
                 root: null,
                 rootMargin: '-100px 0px -100px 0px',
@@ -899,7 +1300,7 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const id = entry.target.id;
-                        links.forEach(link => {
+                        document.querySelectorAll('.nav-link').forEach(link => {
                             link.classList.remove('active');
                             if (link.getAttribute('href') === `#${id}`) {
                                 link.classList.add('active');
@@ -929,6 +1330,9 @@
 
         // Initialize animations
         function initAnimations() {
+            // Skip if we're in the middle of a language switch
+            if (document.body.classList.contains('lang-switching')) return;
+            
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -50px 0px'
@@ -947,12 +1351,8 @@
             });
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            setupNavigation();
-            setupParallax();
-            initAnimations();
-        });
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
